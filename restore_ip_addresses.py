@@ -15,7 +15,7 @@ def restore_ip_addresses(string):
         _process_ip_string(string, [], valid_ips)
         # Output the valid ip addresses
         for address in valid_ips:
-            print address
+            print (address)
 
     return valid_ips
 
