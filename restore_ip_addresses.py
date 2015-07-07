@@ -3,19 +3,24 @@ MAX_OCTET = 255
 
 def restore_ip_addresses(string):
     """ Produce a list of valid ipv4 addresses out of the provided string
-    :param string: a string of length between 4 and 12 containing only numerics
+    :param string: a string of length between 4 and 12 containing only digits
     :return: a list of valid ipv4 addresses as a list of strings representing
-    ipv4 addresses
+    ipv4 addresses, empty list if not valid IP addresses can be formed from the
+    valid string
+    :raise: ValueError if the string doesn't pass validation
     """
-    valid_ips = []
 
     # Only process the string if it's between 4 and 12 characters and contains
     # only digits
-    if 3 < len(string) < 13 and string.isdigit():
-        _process_ip_string(string, [], valid_ips)
-        # Output the valid ip addresses
-        for address in valid_ips:
-            print (address)
+    if 4 > len(string) > 12 or not string.isdigit():
+        raise ValueError("String must be between 4 and 12 characters and "
+                         "contain only digits")
+
+    valid_ips = []
+    _process_ip_string(string, [], valid_ips)
+    # Output the valid ip addresses
+    for address in valid_ips:
+        print (address)
 
     return valid_ips
 
@@ -88,8 +93,29 @@ _assert_lists_contain_same(restore_ip_addresses("1111345"),
 _assert_lists_contain_same(restore_ip_addresses("11111111111"),
                            ['11.111.111.111', '111.11.111.111',
                             '111.111.11.111', '111.111.111.11'])
+_assert_lists_contain_same(restore_ip_addresses("2222"),
+                           ['2.2.2.2'])
+_assert_lists_contain_same(restore_ip_addresses("55555555555"), [])
 
 # Test some error cases
-assert len(restore_ip_addresses("1EE11111111")) == 0
-assert len(restore_ip_addresses("55555555555")) == 0
-assert len(restore_ip_addresses("111")) == 0
+try:
+    restore_ip_addresses("1EE11111111")
+    assert False
+except ValueError:
+    assert True
+
+try:
+    restore_ip_addresses("11.11.11.11")
+    assert False
+except ValueError:
+    assert True
+
+try:
+    restore_ip_addresses("1111111111111")
+except ValueError:
+    assert True
+
+try:
+    restore_ip_addresses("111")
+except ValueError:
+    assert True
